@@ -6,6 +6,7 @@ using UnityEngine;
 public class ControlScript : MonoBehaviour
 {
     Vector2 rotation;
+    public DoorControl doorControl;
 
     void Start()
     {
@@ -19,7 +20,9 @@ public class ControlScript : MonoBehaviour
         rotation.y += Input.GetAxis("Mouse Y") / 4;
         rotation.x = Mathf.Clamp(rotation.x, -20, 20);
         rotation.y = Mathf.Clamp(rotation.y, -20, 20);
-
-        transform.rotation = Quaternion.Euler(rotation.y,0,rotation.x);
+        if (doorControl.GameOn)
+        {
+            transform.rotation = Quaternion.Euler(rotation.y,0,rotation.x);
+        }
     }
 }
