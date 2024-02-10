@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class DoorControl : MonoBehaviour
 {
@@ -10,7 +11,7 @@ public class DoorControl : MonoBehaviour
     public float totalTime = 300;
     public TMP_Text timeText, endOfLevelPanelTimeText;
     public AudioClip WinnerClip, FailClip;
-    public AudioSource source;
+    public AudioSource MazeSource;
     public bool GameOn = true;
     public Animator animator;
 
@@ -19,6 +20,9 @@ public class DoorControl : MonoBehaviour
     {
         particles = GetComponent<ParticleSystem>();
         particles.Pause();
+        GameOn = true;
+        failPanel.SetActive(false);
+        EndOfLevelPanel.SetActive(false);
     }
 
     // Update is called once per frame
@@ -63,18 +67,30 @@ public class DoorControl : MonoBehaviour
     IEnumerator LevelEnd()
     {
         particles.Play();
-        source.PlayOneShot(WinnerClip);
+        GameOn = false;
+        MazeSource.PlayOneShot(WinnerClip);
         yield return new WaitForSeconds(2);
         endOfLevelPanelTimeText.text = "And you still got " + totalTime.ToString("0") + " seconds left!";
         EndOfLevelPanel.SetActive(true);
-        GameOn = false;
         Time.timeScale = .0f;
+        Cursor.lockState = CursorLockMode.None;
     }
     IEnumerator LevelFail()
     {
         GameOn = false;
-        source.PlayOneShot(FailClip);
-        yield return new WaitForSeconds(3);
+        MazeSource.PlayOneShot(FailClip);
+        yield return new WaitForSeconds(4.5f);
         failPanel.SetActive(true);
+        Time.timeScale = .0f;
+        Cursor.lockState = CursorLockMode.None;
+
+    }
+    public void RestartButton()
+    {
+        SceneManager.LoadScene(0);
+    }
+    public void ExitButton()
+    {
+        Application.Quit();
     }
 }
